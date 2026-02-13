@@ -1,3 +1,4 @@
+import os
 import time
 from playwright.sync_api import Page, expect
 
@@ -58,7 +59,20 @@ class BasePage:
     def get_text(self, locator: str) -> str:
         return self.page.locator(locator).inner_text()
 
-    def _take_screenshot(self, filename: str):
-        path = f"screenshots/{filename}_{int(time.time())}.png"
+    def _take_screenshot(self, filename: str, folder=None):
+        import os
+        import time
+
+        if folder is None:
+            folder = "others"
+
+        screenshot_dir = os.path.join("screenshots", folder)
+        os.makedirs(screenshot_dir, exist_ok=True)
+
+        path = os.path.join(
+            screenshot_dir,
+            f"{filename}_{int(time.time())}.png"
+        )
+
         self.page.screenshot(path=path)
-        print(f"[SCREENSHOT] Saved at: {path}")
+        print(f"[SCREENSHOT] Lưu tại: {path}")

@@ -2,6 +2,8 @@ from playwright.sync_api import expect
 
 from core.base_page import BasePage
 import os
+import re
+
 
 
 class ProfilePage(BasePage):
@@ -32,23 +34,10 @@ class ProfilePage(BasePage):
     def verify_update_success(self, expected_message):
         toast = self.page.get_by_text(expected_message, exact=True)
         expect(toast).to_be_visible(timeout=5000)
+        # Chụp ảnh
+        self._take_screenshot("test_update_profile", folder="profile")
 
-    # def verify_profile_updated(self, data: dict):
-    #     name = data.get("name")
-    #     phone = data.get("phone")
-    #     address = data.get("address")
 
-    #     if name is not None:
-    #         name_input = self.page.locator(self.NAME_INPUT)
-    #         expect(name_input).to_have_value(name)
-
-    #     if phone is not None:
-    #         phone_input = self.page.locator(self.PHONE_INPUT)
-    #         expect(phone_input).to_have_value(phone)
-
-    #     if address is not None:
-    #         address_input = self.page.locator(self.ADDRESS_INPUT)
-    #         expect(address_input).to_have_value(address)
 
     def wait_profile_loaded(self):
         assert "sign-in" not in self.page.url, "User is not logged in"
@@ -57,16 +46,59 @@ class ProfilePage(BasePage):
             self.page.locator("form")
         ).to_be_visible(timeout=10000)
 
+    # def get_profile_ui_data(self):
+    #     self.wait_profile_loaded()
+    #     division = self.page.locator(self.DIVISION_SELECT).get_attribute("value")
+    #     ward = self.page.locator(self.WARD_SELECT).get_attribute("value")
+    #     address_value = self.page.locator(self.ADDRESS_INPUT).input_value()
+    #     full_address = f"{ward}, {division}"
+
+    #     return {
+    #         "name": self.page.locator(self.NAME_INPUT).input_value(),
+    #         "phone": self.page.locator(self.PHONE_INPUT).input_value(),
+    #         "address": full_address,
+    #     }
+
     def get_profile_ui_data(self):
         self.wait_profile_loaded()
-        division = self.page.locator(self.DIVISION_SELECT).get_attribute("value")
-        ward = self.page.locator(self.WARD_SELECT).get_attribute("value")
-        address_value = self.page.locator(self.ADDRESS_INPUT).input_value()
-        full_address = f"{ward}, {division}"
+
+        # ===== Name =====
+        name_locator = self.page.locator(self.NAME_INPUT)
+        expect(name_locator).to_be_visible(timeout=5000)
+        name = name_locator.input_value().strip()
+
+        # ===== Phone =====
+        phone_locator = self.page.locator(self.PHONE_INPUT)
+        expect(phone_locator).to_be_visible(timeout=5000)
+        phone = phone_locator.input_value().strip()
+
+        # ===== Address =====
+        address_locator = self.page.locator(self.ADDRESS_INPUT)
+        expect(address_locator).to_be_visible(timeout=5000)
+        address_value = address_locator.input_value().strip()
+
+        # ===== Division (quan trọng nhất - tránh flaky) =====
+        division_locator = self.page.locator(self.DIVISION_SELECT)
+
+        # Đợi division có giá trị thật sự (không rỗng)
+        expect(division_locator).to_have_value(
+            re.compile(r".+"), timeout=5000
+        )
+
+        division = division_locator.input_value().strip()
+        ward_locator = self.page.locator(self.WARD_SELECT)
+        expect(ward_locator).to_have_value(
+            re.compile(r".+"), timeout=5000
+        )
+        ward = ward_locator.input_value().strip()
+
+
+        # Build address giống format API
+        full_address = f"{ward}, {division}".strip()
 
         return {
-            "name": self.page.locator(self.NAME_INPUT).input_value(),
-            "phone": self.page.locator(self.PHONE_INPUT).input_value(),
+            "name": name,
+            "phone": phone,
             "address": full_address,
         }
 
