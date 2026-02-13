@@ -1,0 +1,15 @@
+{
+"success_update_profile": {
+        
+         "name": "Updated User",
+         "phone": "0987654321",
+         "address": "456 Hà Nội, Việt Nam"
+        
+    },
+    "validate_update_profile_blank_name": {
+        "name": "",
+        "phone": "0987654321",
+        "address": "456 hà nội, Việt Nam"
+
+}
+}

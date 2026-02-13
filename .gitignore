@@ -1,0 +1,69 @@
+# Created by pytest automatically.
+__pycache__/
+*.pyc
+.pytest_cache/
+.vscode/
+.idea/
+*.log
+.venv
+allure-results/
+allure-report/
+test-results/
+playwright-report/
+*.zip
+# ================= Python =================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.Python
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# ================= Pytest =================
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ================= Playwright =================
+.playwright/
+test-results/
+playwright-report/
+blob-report/
+
+# ================= Allure =================
+allure-results/
+allure-report/
+
+# ================= IDE =================
+.vscode/
+.idea/
+*.iml
+
+# ================= OS =================
+.DS_Store
+Thumbs.db
+
+# ================= Logs =================
+*.log
+
+# ================= Env / Secrets =================
+.env
+.env.*
+
+# Ignore sibling folders (parent level)
+../BT1-8/
+../BT_Other/
+../MaiNTH_API.rar
+../MaiNTH_HRM/
+../ORANGE_HRM/
+../PlaywrightPython/
+__pycache__/
+.venv/
+*.rar
+reports/
+screenshots/
